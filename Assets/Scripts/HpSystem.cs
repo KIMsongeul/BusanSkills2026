@@ -13,6 +13,12 @@ public class HpSystem : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        Player player = GetComponent<Player>();
+        if (player != null && player.IsInvincible())
+        {
+            return;
+        }
+        
         currentHp -= damage;
 
         if (currentHp <= 0)

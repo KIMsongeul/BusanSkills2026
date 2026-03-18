@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -10,8 +11,13 @@ public class Player : MonoBehaviour
     //폭탄
     private int bombCount = 3;
     
-    //아이템
-    private int hpRecoveryCount = 0;
+    //아이템 카운트
+    private int hpRecoveryItemCount = 0;
+    private int invincibleItemCount = 0;
+    
+    //무적 상태
+    private bool isInvincible = false;
+    private float invincibleTime = 7f;
     
     private Rigidbody2D rigid;
     private HpSystem hp;
@@ -53,22 +59,51 @@ public class Player : MonoBehaviour
         //체력회복 아이템 사용
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (hpRecoveryCount > 0)
+            if (hpRecoveryItemCount > 0)
             {
-                hpRecoveryCount--;
+                hpRecoveryItemCount--;
                 hp.TakeDamage(-30);
             }
         }
         
+        //무적 아이템 사용
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (invincibleItemCount > 0)
+            {
+                invincibleItemCount--;
+                StartCoroutine(Invincible());
+            }
+        }
+        
+    }
+
+    IEnumerator Invincible()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibleTime);
+        isInvincible = false;
+    }
+
+    public bool IsInvincible()
+    {
+        return isInvincible;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("HpRecoveryItem"))
         {
-            hpRecoveryCount++;
+            hpRecoveryItemCount++;
             Destroy(other.gameObject);
         }
+
+        if (other.CompareTag("InvincibleItem"))
+        {
+            invincibleItemCount++;
+            Destroy(other.gameObject);
+        }
+        
     }
 
     private void Movement()
