@@ -3,18 +3,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    //movement 
+    //이동 
     private float moveSpeed = 3f;
     private float rotSpeed = 2f;
 
+    //폭탄
     private int bombCount = 3;
     
+    //아이템
+    private int hpRecoveryCount = 0;
     
     private Rigidbody2D rigid;
+    private HpSystem hp;
 
     private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
+        hp = GetComponent<HpSystem>();
     }
 
     private void Update()
@@ -42,6 +47,16 @@ public class Player : MonoBehaviour
                     Destroy(bullet);
                 }
                 bombCount--;
+            }
+        }
+        
+        //체력회복 아이템 사용
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (hpRecoveryCount > 0)
+            {
+                hpRecoveryCount--;
+                hp.TakeDamage(-30);
             }
         }
         
